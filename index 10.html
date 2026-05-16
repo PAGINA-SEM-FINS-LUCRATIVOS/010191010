@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>OVERSTORE ULTIMATE V40 - ZENITH ENTERPRISE</title>
+    <style>
+        :root {
+            --neon-red: #ff003c;
+            --neon-glow: rgba(255, 0, 60, 0.4);
+            --dark-core: #060608;
+            --glass-base: rgba(15, 15, 20, 0.85);
+            --glass-card: rgba(22, 22, 28, 0.7);
+            --border-alpha: rgba(255, 0, 60, 0.2);
+            --text-main: #f5f5f7;
+            --text-muted: #8e8e93;
+            --mines-gold: #ffcc00;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        input, textarea, select {
+            -webkit-user-select: text;
+            user-select: text;
+        }
+
+        body, html {
+            background: var(--dark-core);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            height: 100vh;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        /* Fundo Animado */
+        .cyber-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 0, 60, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 0, 60, 0.02) 1px, transparent 1px);
+            background-size: 30px 30px;
+            z-index: -2;
+        }
+
+        .neon-atmosphere {
+            position: fixed;
+            top: -10%;
+            left: -10%;
+            width: 120%;
+            height: 120%;
+            background: radial-gradient(circle at 50% 30%, rgba(255, 0, 60, 0.08) 0%, transparent 60%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Tela de Login */
+        #login-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .login-box {
+            background: var(--glass-base);
+            border: 1px solid var(--border-alpha);
+            padding: 40px 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            width: 100%;
+            max-width: 380px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 0, 60, 0.1);
+            text-align: center;
+        }
+
+        .login-box h2 {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            color: #fff;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .login-box p {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 15px 16px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.25s ease;
+        }
+
+        .input-wrapper input:focus {
+            border-color: var(--neon-red);
+            background: rgba(0, 0, 0, 0.6);
+            box-shadow: 0 0 15px var(--neon-glow);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 18px;
+            user-select: none;
+            transition: color 0.2s;
+        }
+
+        .password-toggle:hover {
+            color: var(--neon-red);
+        }
+
+        .btn-action {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--neon-red), #b50027);
+            border: none;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            letter-spacing: 1px;
+            box-shadow: 0 4px 20px rgba(255, 0, 61, 0.3);
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(255, 0, 61, 0.5), 0 0 10px var(--neon-red);
+            background: linear-gradient(135deg, #ff2a5f, var(--neon-red));
+        }
+
+        /* Painel Interno */
+        #main-panel {
+            display: none;
+            padding: 40px 20px;
+            max-width: 1300px;
+            margin: 0 auto;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .dashboard-header h1 {
+            font-size: 36px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-shadow: 0 0 20px rgba(255, 0, 60, 0.3);
+            margin-bottom: 10px;
+        }
+
+        .verified-badge {
+            background: rgba(255, 0, 60, 0.15);
+            border: 1px solid var(--neon-red);
+            color: var(--neon-red);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .cyber-card {
+            background: var(--glass-card);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-left: 4px solid var(--neon-red);
+            border-radius: 14px;
+            padding: 30px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            transition: all 0.3s ease;
+        }
+
+        .cyber-card:hover {
+            border-color: var(--neon-red);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 0, 60, 0.1);
+        }
+
+        .cyber-card h3 {
+            font-size: 19px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+        }
+
+        .input-number {
+            width: 100%;
+            padding: 12px 14px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            color: #fff;
+            outline: none;
+            font-size: 15px;
+        }
+
+        .input-number:focus {
+            border-color: var(--neon-red);
+        }
+
+        .control-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #fff;
+        }
+
+        .terminal-output {
+            width: 100%;
+            height: 120px;
+            background: #020204;
+            color: #00ff88;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            resize: none;
+            outline: none;
+            overflow-y: auto;
+        }
+
+        /* Mines Predictor Styles */
+        .mines-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px;
+            margin: 10px 0;
+        }
+
+        .mine-slot {
+            aspect-ratio: 1;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            transition: 0.3s;
+        }
+
+        .mine-slot.active {
+            background: var(--mines-gold);
+            box-shadow: 0 0 10px var(--mines-gold);
+            color: #000;
+        }
+
+        /* Tube Down Styles */
+        .media-preview-viewport {
+            width: 100%;
+            height: 165px;
+            background: #000;
+            border: 1px dashed rgba(255, 0, 60, 0.3);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .select-custom {
+            width: 100%;
+            padding: 14px;
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .progress-container {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 30px;
+            height: 8px;
+            overflow: hidden;
+            display: none;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .progress-indicator {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--neon-red), #ff5e84);
+            box-shadow: 0 0 10px var(--neon-red);
+            transition: width 0.1s linear;
+        }
+
+        .download-routing-box {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            background: rgba(0, 255, 136, 0.03);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .routing-title {
+            font-size: 13px;
+            color: #00ff88;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .routing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .btn-platform {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #fff;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 10px 0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-platform:hover {
+            background: #fff;
+            color: #000;
+            font-weight: 700;
+            box-shadow: 0 0 12px #fff;
+        }
+
+        /* Estilos do ChatGPT Interface */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            padding: 15px;
+            height: 280px;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .msg {
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            max-width: 85%;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .msg.user {
+            align-self: flex-end;
+            background: linear-gradient(135deg, var(--neon-red), #900);
+            color: white;
+            border-bottom-right-radius: 2px;
+        }
+
+        .msg.ai {
+            align-self: flex-start;
+            background: rgba(255, 255, 255, 0.05);
+            color: #00ff88;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom-left-radius: 2px;
+        }
+
+        .loading-dots:after {
+            content: '.';
+            animation: dots 1.5s steps(5, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60% { content: '...'; }
+            80%, 100% { content: ''; }
+        }
+
+        .hidden { display: none !important; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; } to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            #main-panel { padding: 20px 12px; }
+            .dashboard-header h1 { font-size: 28px; }
+            .dashboard-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="cyber-grid"></div>
+    <div class="neon-atmosphere"></div>
+
+    <div id="login-screen">
+        <div class="login-box">
+            <h2>OVER BAN</h2>
+            <p>CONEXÃO SEGURA REQUISITADA</p>
+
+            <div class="input-wrapper">
+                <input type="text" id="user" placeholder="Identificador de Usuário" autocomplete="off">
+            </div>
+            <div class="input-wrapper">
+                <input type="password" id="pass" placeholder="Chave de Acesso Secundária">
+                <span class="password-toggle" id="eye-switch" onclick="handlePasswordMode()">👁️</span>
+            </div>
+
+            <button class="btn-action" onclick="validateIdentity()">AUTENTICAR LINK</button>
+        </div>
+    </div>
+
+    <div id="main-panel">
+        <div class="dashboard-header">
+            <span class="verified-badge">✓ ACESSO EMPRESARIAL LIBERADO</span>
+            <h1>OVERBAN MAINFRAME</h1>
+        </div>
+
+        <div class="dashboard-grid">
+
+            <div class="cyber-card" style="border-left-color: var(--mines-gold);">
+                <h3>💣 Mines Predictor v2.0</h3>
+                <p style="font-size: 11px; color: var(--text-muted);">Algoritmo de análise de padrões RNG para Cassinos.</p>
+                <div class="mines-grid" id="mines-display">
+                    </div>
+                <button class="btn-action" style="background: var(--mines-gold); color: #000; margin-top: 5px;" onclick="generateMinesSignal()">IDENTIFICAR SINAL</button>
+                <div id="mines-status" style="font-size: 12px; text-align: center; color: var(--mines-gold); margin-top: 10px;">Aguardando requisição...</div>
+            </div>
+
+            <div class="cyber-card" style="border-left-color: #00ff88;">
+                <h3>🔥 FireMail 2.0 Enterprise</h3>
+                <p style="font-size: 11px; color: var(--text-muted);">Geração de endereços de elite com interceptação ultra-rápida.</p>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="fire-email" placeholder="Gerando endereço..." readonly style="width:100%; padding: 10px; background:#000; border: 1px solid #222; color:#0f0; border-radius:8px;">
+                    <button class="btn-action" style="width: 80px; background:#00ff88; color:#000; margin-top: 0; padding: 0;" onclick="generateFireEmail()">GERAR</button>
+                </div>
+                <div class="terminal-output" id="fire-inbox">Terminal FireMail offline...</div>
+                <button class="btn-secondary" style="width:100%; padding: 10px; border-radius:8px;" onclick="refreshFireInbox()">ESCANEAR PORTAS DE ENTRADA</button>
+            </div>
+
+            <div class="cyber-card">
+                <h3>🎵 Gerador Spotify</h3>
+                <input type="number" class="input-number" id="qty-spotify" placeholder="Volume de requisições">
+                <button class="btn-action" onclick="engineGenerator('spotify')">Compilar Links Premium</button>
+                <textarea class="terminal-output" id="out-spotify" placeholder="Log de links disponíveis..." readonly></textarea>
+                <div class="control-row">
+                    <button class="btn-secondary" onclick="clipboardInjector('out-spotify')">Copiar Bloco</button>
+                    <button class="btn-secondary" onclick="exportModuleFile('out-spotify', 'Spotify_Premium')">Salvar .TXT</button>
+                </div>
+            </div>
+
+            <div class="cyber-card">
+                <h3>🎨 Gerador Canva Pro</h3>
+                <input type="number" class="input-number" id="qty-canva" placeholder="Volume de requisições">
+                <button class="btn-action" onclick="engineGenerator('canva')">Compilar Links Compartilhados</button>
+                <textarea class="terminal-output" id="out-canva" placeholder="Log de links disponíveis..." readonly></textarea>
+                <div class="control-row">
+                    <button class="btn-secondary" onclick="clipboardInjector('out-canva')">Copiar Bloco</button>
+                    <button class="btn-secondary" onclick="exportModuleFile('out-canva', 'Canva_Pro')">Salvar .TXT</button>
+                </div>
+            </div>
+
+            <div class="cyber-card">
+                <h3>📹 TubeDown Extractor v3.0</h3>
+                <input type="text" class="input-number" id="yt-url" placeholder="Insira o link completo do vídeo" oninput="captureStreamPreview()">
+
+                <div class="media-preview-viewport" id="yt-viewport">
+                    <span style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 15px;">Aguardando buffer de link válido...</span>
+                </div>
+
+                <select class="select-custom" id="yt-target-quality">
+                    <option value="1080p">MP4 Video - Full HD 1080p [~134.4 MB]</option>
+                    <option value="720p" selected>MP4 Video - HD 720p [~72.1 MB]</option>
+                    <option value="mp3">MP3 Audio - High Quality 320kbps [~14.2 MB]</option>
+                </select>
+
+                <button class="btn-action" id="btn-extract" onclick="initiateMediaDownload()">Extrair Fluxo de Mídia</button>
+
+                <div class="progress-container" id="prog-wrap">
+                    <div class="progress-indicator" id="prog-fill"></div>
+                </div>
+
+                <div class="download-routing-box" id="routing-container">
+                    <p class="routing-title">✓ Compilação de mídia executada. Salvar no Armazenamento:</p>
+                    <div class="routing-grid">
+                        <button class="btn-platform" onclick="triggerNativeBinaryDownload('PC')">💻 PC / Mac</button>
+                        <button class="btn-platform" onclick="triggerNativeBinaryDownload('Android')">🤖 Android</button>
+                        <button class="btn-platform" onclick="triggerNativeBinaryDownload('iOS')">🍏 iPhone / iOS</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cyber-card">
+                <h3>📸 IG PAN - REPORT BOT</h3>
+                <input type="text" id="ig-target" placeholder="Link do Perfil ou @Username" class="input-number">
+                <input type="number" id="ig-qty" placeholder="Quantidade de Reports" class="input-number" style="margin-top: 10px;">
+                <button class="btn-action" style="margin-top: 15px;" onclick="initiateIGReport()">INICIAR DENÚNCIAS</button>
+                <div class="terminal-output" id="ig-log" style="margin-top: 15px; overflow-y: auto;">
+                    [STATUS] Aguardando comando...
+                </div>
+            </div>
+
+            <div class="cyber-card">
+                <h3>✨ Gerador de Nick</h3>
+                <input type="number" class="input-number" id="nick-len" placeholder="Qtd de letras (3-20)" min="3" max="20">
+                <button class="btn-action" onclick="generateNick()">Gerar Nick</button>
+                <div class="terminal-output" id="nick-result" style="margin-top: 15px;">[INFO] Aguardando comando...</div>
+            </div>
+
+            <div class="cyber-card">
+                <h3>🎁 Sugestão de Gift</h3>
+                <select class="select-custom" id="gift-type" onchange="updateGiftPreview()" style="margin-bottom: 10px;">
+                    <option value="">Selecione o estilo</option>
+                    <option value="anime">Anime Edition</option>
+                    <option value="cyber">Cyberpunk Style</option>
+                </select>
+                <img id="gift-preview" src="" alt="Preview" style="width: 100%; border-radius: 8px; display: none;">
+                <div class="terminal-output" id="gift-log" style="margin-top: 10px;">Selecione um estilo para ver sugestões.</div>
+            </div>
+
+            <div class="cyber-card">
+                <h3>🤖 Bot Gerador Premium</h3>
+                <select class="select-custom" id="bot-func">
+                    <option value="val_cc">Validador de CC</option>
+                    <option value="gen_bin">Gerador de BIN</option>
+                </select>
+                <button class="btn-action" style="margin-top: 15px;" onclick="runBotFunc()">Executar Função</button>
+                <div class="terminal-output" id="bot-log" style="margin-top: 15px;">[BOT] Pronto para operação.</div>
+            </div>
+
+            <div class="cyber-card" style="border-left: 4px solid #00ff88; grid-column: span 1;">
+                <h3 style="color: #00ff88;">🧠 Chat GPT AI - v4.0</h3>
+                <div class="chat-container" id="chat-viewport">
+                    <div class="msg ai">Olá! Sou a IA avançada integrada (Motor OpenAI). Analiso o contexto das suas mensagens para dar dicas ou buscar informações. Como posso ajudar o sistema OverStore hoje?</div>
+                </div>
+                <div style="display: flex; gap: 8px; margin-top: 15px;">
+                    <input type="text" id="ai-input" placeholder="Digite seu comando..." style="margin-top: 0; flex: 1; padding: 12px; background: #000; border: 1px solid #333; color: white; border-radius: 8px;" onkeypress="if(event.key==='Enter') askAI()">
+                    <button class="btn-action" style="width: 60px; padding: 0; margin-top: 0;" onclick="askAI()">🚀</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Visibilidade da Senha
+        function handlePasswordMode() {
+            const passField = document.getElementById('pass');
+            const eyeBtn = document.getElementById('eye-switch');
+            if (passField.type === 'password') {
+                passField.type = 'text';
+                eyeBtn.innerText = '🔒';
+            } else {
+                passField.type = 'password';
+                eyeBtn.innerText = '👁️';
+            }
+        }
+
+        // Validação de Login
+        function validateIdentity() {
+            const credentialUser = document.getElementById('user').value;
+            const credentialPass = document.getElementById('pass').value;
+
+            if (credentialUser === "APELAWAR" && credentialPass === "@OverBan07") {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('main-panel').style.display = 'block';
+                initMinesBoard();
+            } else {
+                alert("Acesso Recusado.");
+            }
+        }
+
+        // --- LÓGICA MINES ---
+        function initMinesBoard() {
+            const grid = document.getElementById('mines-display');
+            grid.innerHTML = '';
+            for(let i=0; i<25; i++) {
+                const slot = document.createElement('div');
+                slot.className = 'mine-slot';
+                slot.id = `slot-${i}`;
+                grid.appendChild(slot);
+            }
+        }
+
+        function generateMinesSignal() {
+            initMinesBoard();
+            const status = document.getElementById('mines-status');
+            status.innerText = "Analisando algoritmos RNG...";
+
+            setTimeout(() => {
+                const indices = [];
+                while(indices.length < 5) {
+                    const r = Math.floor(Math.random() * 25);
+                    if(!indices.includes(r)) indices.push(r);
+                }
+                indices.forEach(idx => {
+                    document.getElementById(`slot-${idx}`).classList.add('active');
+                    document.getElementById(`slot-${idx}`).innerText = '💎';
+                });
+                status.innerText = "SINAL ENCONTRADO! ✅";
+            }, 1500);
+        }
+
+        // --- LÓGICA FIREMAIL 2.0 ---
+        let currentFireEmail = "";
+        function generateFireEmail() {
+            const user = Math.random().toString(36).substring(2, 10);
+            currentFireEmail = user + "@1secmail.com";
+            document.getElementById('fire-email').value = currentFireEmail;
+            document.getElementById('fire-inbox').innerHTML = `[FIREMAIL] Endereço ${currentFireEmail} Ativo.<br>[STATUS] Escaneando rede de entrada...`;
+        }
+
+        function refreshFireInbox() {
+            if(!currentFireEmail) return alert("Gere um e-mail primeiro.");
+            const inbox = document.getElementById('fire-inbox');
+            inbox.innerHTML = "[FIREMAIL] Interceptando pacotes de dados...";
+            setTimeout(() => {
+                inbox.innerHTML = `
+                    <div style="border-left: 2px solid #00ff88; padding-left: 10px; margin-bottom: 10px; background: rgba(0,255,136,0.05); padding: 8px; border-radius: 4px;">
+                        <small style="color: #00ff88;">REMETENTE: noreply@system-verification.com</small><br>
+                        <b>CÓDIGO DE ACESSO: <span style="color: #fff; font-size: 16px; letter-spacing: 2px;">8842-10</span></b><br>
+                        <small style="color: var(--text-muted);">Recebido em: ${new Date().toLocaleTimeString()}</small>
+                    </div>`;
+            }, 1200);
+        }
+
+        // Motor Gerador Unificado
+        function engineGenerator(type) {
+            const quantity = document.getElementById(`qty-${type}`).value;
+            const outputLog = document.getElementById(`out-${type}`);
+            if(!quantity || quantity <= 0) return alert("Determine um volume válido.");
+
+            const databaseChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let buildPool = [];
+
+            for (let i = 0; i < quantity; i++) {
+                let segmentToken = '';
+                for (let j = 0; j < 15; j++) {
+                    segmentToken += databaseChars.charAt(Math.floor(Math.random() * databaseChars.length));
+                }
+                if (type === 'spotify') buildPool.push(`https://www.spotify.com/br-pt/premium/?utm_source=br-pt_brand_contextual_text&utm_medium=$${segmentToken}`);
+                if (type === 'canva') buildPool.push(`https://www.canva.com/pro/?utm_source=homepage&utm_medium=${segmentToken}`);
+            }
+            outputLog.value = buildPool.join('\n');
+        }
+
+        function clipboardInjector(id) {
+            const targetElement = document.getElementById(id);
+            if(!targetElement.value) return;
+            targetElement.select();
+            navigator.clipboard.writeText(targetElement.value);
+            alert("Conteúdo copiado!");
+        }
+
+        function exportModuleFile(id, labelName) {
+            const rawContent = document.getElementById(id).value;
+            if(!rawContent) return;
+            const linkTrigger = document.createElement("a");
+            linkTrigger.href = "data:text/plain;charset=utf-8," + encodeURIComponent(rawContent);
+            linkTrigger.download = `${labelName}_List.txt`;
+            linkTrigger.click();
+        }
+
+        function extractVideoId(urlData) {
+            const expression = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const matchToken = urlData.match(expression);
+            return (matchToken && matchToken[2].length === 11) ? matchToken[2] : null;
+        }
+
+        function captureStreamPreview() {
+            const inputUrl = document.getElementById('yt-url').value;
+            const viewport = document.getElementById('yt-viewport');
+            const targetedId = extractVideoId(inputUrl);
+
+            if (targetedId) {
+                viewport.innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${targetedId}" frameborder="0" allowfullscreen style="border-radius:8px;"></iframe>`;
+            } else if (inputUrl.trim() === "") {
+                viewport.innerHTML = `<span style="color: var(--text-muted); font-size: 13px;">Aguardando buffer de link válido...</span>`;
+            }
+        }
+
+        function initiateMediaDownload() {
+            const inputUrl = document.getElementById('yt-url').value;
+            if (!extractVideoId(inputUrl)) return alert("Vincule um link válido!");
+
+            const actionBtn = document.getElementById('btn-extract');
+            const wrapProg = document.getElementById('prog-wrap');
+            const fillProg = document.getElementById('prog-fill');
+            const routeBox = document.getElementById('routing-container');
+
+            actionBtn.disabled = true;
+            routeBox.style.display = 'none';
+            wrapProg.style.display = 'block';
+            fillProg.style.width = '0%';
+
+            let simulationRatio = 0;
+            const clockInterval = setInterval(() => {
+                if (simulationRatio >= 100) {
+                    clearInterval(clockInterval);
+                    actionBtn.disabled = false;
+                    wrapProg.style.display = 'none';
+                    routeBox.style.display = 'flex';
+                } else {
+                    simulationRatio += 5;
+                    fillProg.style.width = simulationRatio + '%';
+                }
+            }, 100);
+        }
+
+        function triggerNativeBinaryDownload(platformOS) {
+            const formatSelection = document.getElementById('yt-target-quality').value;
+            let mimeType = formatSelection === 'mp3' ? 'audio/mpeg' : 'video/mp4';
+            let extension = formatSelection === 'mp3' ? 'mp3' : 'mp4';
+
+            alert(`Sincronizando arquivo .${extension.toUpperCase()} para ${platformOS}`);
+
+            const dummyVideoData = new Uint8Array([0x00, 0x00, 0x00, 0x18, 0x66, 0x74, 0x79, 0x70, 0x69, 0x73, 0x6f, 0x6d]); 
+            const videoBlob = new Blob([dummyVideoData], { type: mimeType });
+
+            const downloadUrl = window.URL.createObjectURL(videoBlob);
+            const downloadLink = document.createElement('a');
+            downloadLink.href = downloadUrl;
+            downloadLink.download = `OverStore_Media.${extension}`;
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+        }
+
+        function initiateIGReport() {
+            const log = document.getElementById('ig-log');
+            log.innerHTML = `[!] Conectando ao Proxy...<br>[#] Enviando pacotes de denúncia... OK`;
+        }
+
+        function generateNick() {
+            const len = document.getElementById('nick-len').value || 8;
+            const chars = "abcdefghijklmnopqrstuvwxyz";
+            let name = "";
+            for (let i = 0; i < len; i++) {
+                name += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            document.getElementById('nick-result').innerText = name.charAt(0).toUpperCase() + name.slice(1);
+        }
+
+        function updateGiftPreview() {
+            const type = document.getElementById('gift-type').value;
+            const img = document.getElementById('gift-preview');
+            img.style.display = type ? "block" : "none";
+            if(type) img.src = "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJ6bmYzdHBrZ3BqZ3BqZ3BqZ3BqZ3BqZ3BqZ3BqZ3BqZ3BqJmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKMGpxx6r9mC6Sk/giphy.gif";
+        }
+
+        function runBotFunc() {
+            document.getElementById('bot-log').innerHTML = `[PROCESSANDO]: Tarefa executada com sucesso.`;
+        }
+
+        let chatHistory = [];
+        async function askAI() {
+            const input = document.getElementById('ai-input');
+            const viewport = document.getElementById('chat-viewport');
+            const promptText = input.value.trim();
+            if(!promptText) return;
+
+            const userMsg = document.createElement('div');
+            userMsg.className = 'msg user';
+            userMsg.innerText = promptText;
+            viewport.appendChild(userMsg);
+
+            chatHistory.push({ role: "user", content: promptText });
+
+            const aiMsg = document.createElement('div');
+            aiMsg.className = 'msg ai loading-dots';
+            aiMsg.innerText = 'Processando dados';
+            viewport.appendChild(aiMsg);
+
+            viewport.scrollTop = viewport.scrollHeight;
+            input.value = '';
+
+            setTimeout(() => {
+                aiMsg.classList.remove('loading-dots');
+                const isFollowUp = chatHistory.length > 2;
+                let contextualReply = isFollowUp ? `🧠 Analisando sua nova pergunta sobre "${promptText}" com base no que falamos antes: Tudo está operante.` : `🤖 Entendido! Registrei o comando: "${promptText}". Como posso prosseguir?`;
+                aiMsg.innerText = contextualReply;
+                chatHistory.push({ role: "assistant", content: contextualReply });
+                viewport.scrollTop = viewport.scrollHeight;
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
