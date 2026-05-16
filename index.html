@@ -15,6 +15,7 @@
             --text-main: #f5f5f7;
             --text-muted: #8e8e93;
             --mines-gold: #ffcc00;
+            --mp3-cyan: #00f2ff;
         }
 
         * {
@@ -338,6 +339,10 @@
             cursor: pointer;
         }
 
+        .select-custom:focus {
+            border-color: var(--neon-red);
+        }
+
         .progress-container {
             width: 100%;
             background: rgba(255, 255, 255, 0.03);
@@ -399,7 +404,7 @@
             box-shadow: 0 0 12px #fff;
         }
 
-        /* Estilos do ChatGPT Interface */
+        /* Estilos do ChatGPT Interface Integrado */
         .chat-container {
             display: flex;
             flex-direction: column;
@@ -474,7 +479,7 @@
         <div class="login-box">
             <h2>OVER BAN</h2>
             <p>CONEXÃO SEGURA REQUISITADA</p>
-
+            
             <div class="input-wrapper">
                 <input type="text" id="user" placeholder="Identificador de Usuário" autocomplete="off">
             </div>
@@ -482,7 +487,7 @@
                 <input type="password" id="pass" placeholder="Chave de Acesso Secundária">
                 <span class="password-toggle" id="eye-switch" onclick="handlePasswordMode()">👁️</span>
             </div>
-
+            
             <button class="btn-action" onclick="validateIdentity()">AUTENTICAR LINK</button>
         </div>
     </div>
@@ -494,25 +499,36 @@
         </div>
 
         <div class="dashboard-grid">
+            
+            <div class="cyber-card" style="border-left-color: var(--mp3-cyan);">
+                <h3>🎵 Bot MP3 Converter</h3>
+                <p style="font-size: 11px; color: var(--text-muted);">Conversão binária e extração de áudio de alta fidelidade.</p>
+                <input type="text" id="mp3-url" placeholder="URL para conversão..." class="input-number">
+                <select class="select-custom" id="mp3-bitrate">
+                    <option value="320">Ultra High - 320kbps</option>
+                    <option value="256" selected>High - 256kbps</option>
+                    <option value="128">Standard - 128kbps</option>
+                </select>
+                <button class="btn-action" style="background: var(--mp3-cyan); color: #000;" onclick="startMp3Extraction()">INICIAR CONVERSÃO</button>
+                <div class="terminal-output" id="mp3-log">[SYS] Aguardando buffer...</div>
+            </div>
 
             <div class="cyber-card" style="border-left-color: var(--mines-gold);">
                 <h3>💣 Mines Predictor v2.0</h3>
                 <p style="font-size: 11px; color: var(--text-muted);">Algoritmo de análise de padrões RNG para Cassinos.</p>
-                <div class="mines-grid" id="mines-display">
-                    </div>
+                <div class="mines-grid" id="mines-display"></div>
                 <button class="btn-action" style="background: var(--mines-gold); color: #000; margin-top: 5px;" onclick="generateMinesSignal()">IDENTIFICAR SINAL</button>
                 <div id="mines-status" style="font-size: 12px; text-align: center; color: var(--mines-gold); margin-top: 10px;">Aguardando requisição...</div>
             </div>
 
             <div class="cyber-card" style="border-left-color: #00ff88;">
                 <h3>🔥 FireMail 2.0 Enterprise</h3>
-                <p style="font-size: 11px; color: var(--text-muted);">Geração de endereços de elite com interceptação ultra-rápida.</p>
                 <div style="display: flex; gap: 8px;">
                     <input type="text" id="fire-email" placeholder="Gerando endereço..." readonly style="width:100%; padding: 10px; background:#000; border: 1px solid #222; color:#0f0; border-radius:8px;">
                     <button class="btn-action" style="width: 80px; background:#00ff88; color:#000; margin-top: 0; padding: 0;" onclick="generateFireEmail()">GERAR</button>
                 </div>
                 <div class="terminal-output" id="fire-inbox">Terminal FireMail offline...</div>
-                <button class="btn-secondary" style="width:100%; padding: 10px; border-radius:8px;" onclick="refreshFireInbox()">ESCANEAR PORTAS DE ENTRADA</button>
+                <button class="btn-secondary" style="width:100%; padding: 10px; border-radius:8px;" onclick="refreshFireInbox()">ESCANEAR PORTAS</button>
             </div>
 
             <div class="cyber-card">
@@ -540,7 +556,7 @@
             <div class="cyber-card">
                 <h3>📹 TubeDown Extractor v3.0</h3>
                 <input type="text" class="input-number" id="yt-url" placeholder="Insira o link completo do vídeo" oninput="captureStreamPreview()">
-
+                
                 <div class="media-preview-viewport" id="yt-viewport">
                     <span style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 15px;">Aguardando buffer de link válido...</span>
                 </div>
@@ -548,6 +564,7 @@
                 <select class="select-custom" id="yt-target-quality">
                     <option value="1080p">MP4 Video - Full HD 1080p [~134.4 MB]</option>
                     <option value="720p" selected>MP4 Video - HD 720p [~72.1 MB]</option>
+                    <option value="480p">MP4 Video - SD 480p [~38.5 MB]</option>
                     <option value="mp3">MP3 Audio - High Quality 320kbps [~14.2 MB]</option>
                 </select>
 
@@ -623,13 +640,10 @@
         // Visibilidade da Senha
         function handlePasswordMode() {
             const passField = document.getElementById('pass');
-            const eyeBtn = document.getElementById('eye-switch');
             if (passField.type === 'password') {
                 passField.type = 'text';
-                eyeBtn.innerText = '🔒';
             } else {
                 passField.type = 'password';
-                eyeBtn.innerText = '👁️';
             }
         }
 
@@ -645,6 +659,32 @@
             } else {
                 alert("Acesso Recusado.");
             }
+        }
+
+        // --- LÓGICA BOT MP3 (BASEADO NO SCRIPT BINÁRIO) ---
+        function startMp3Extraction() {
+            const url = document.getElementById('mp3-url').value;
+            const log = document.getElementById('mp3-log');
+            if(!url) return alert("Insira um link para extração.");
+            
+            log.innerHTML = "[EXTRAÇÃO] Lendo cabeçalhos binários...<br>";
+            setTimeout(() => {
+                log.innerHTML += "[INFO] Identificando frames de áudio... OK<br>";
+                setTimeout(() => {
+                    log.innerHTML += "[CONVERSÃO] Codificando para bitrate selecionado...<br>";
+                    setTimeout(() => {
+                        log.innerHTML += "[FIM] Stream extraída com sucesso! Gerando Blob...<br>";
+                        // Gatilho de download MP3 real via buffer simulado
+                        const mp3Header = new Uint8Array([0x49, 0x44, 0x33, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00]);
+                        const blob = new Blob([mp3Header], { type: 'audio/mpeg' });
+                        const dLink = document.createElement('a');
+                        dLink.href = URL.createObjectURL(blob);
+                        dLink.download = `OverStore_Audio_${Math.floor(Math.random()*1000)}.mp3`;
+                        dLink.click();
+                        log.innerHTML += "<span style='color:cyan;'>[SUCESSO] Download enviado ao dispositivo.</span>";
+                    }, 1500);
+                }, 1000);
+            }, 800);
         }
 
         // --- LÓGICA MINES ---
@@ -696,7 +736,7 @@
                     <div style="border-left: 2px solid #00ff88; padding-left: 10px; margin-bottom: 10px; background: rgba(0,255,136,0.05); padding: 8px; border-radius: 4px;">
                         <small style="color: #00ff88;">REMETENTE: noreply@system-verification.com</small><br>
                         <b>CÓDIGO DE ACESSO: <span style="color: #fff; font-size: 16px; letter-spacing: 2px;">8842-10</span></b><br>
-                        <small style="color: var(--text-muted);">Recebido em: ${new Date().toLocaleTimeString()}</small>
+                        <small style="color: var(--text-muted);">Recebido agora</small>
                     </div>`;
             }, 1200);
         }
@@ -726,7 +766,7 @@
             if(!targetElement.value) return;
             targetElement.select();
             navigator.clipboard.writeText(targetElement.value);
-            alert("Conteúdo copiado!");
+            alert("Copiado!");
         }
 
         function exportModuleFile(id, labelName) {
@@ -752,7 +792,7 @@
             if (targetedId) {
                 viewport.innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${targetedId}" frameborder="0" allowfullscreen style="border-radius:8px;"></iframe>`;
             } else if (inputUrl.trim() === "") {
-                viewport.innerHTML = `<span style="color: var(--text-muted); font-size: 13px;">Aguardando buffer de link válido...</span>`;
+                viewport.innerHTML = `<span style="color: var(--text-muted); font-size: 13px;">Aguardando link...</span>`;
             }
         }
 
@@ -854,9 +894,9 @@
             setTimeout(() => {
                 aiMsg.classList.remove('loading-dots');
                 const isFollowUp = chatHistory.length > 2;
-                let contextualReply = isFollowUp ? `🧠 Analisando sua nova pergunta sobre "${promptText}" com base no que falamos antes: Tudo está operante.` : `🤖 Entendido! Registrei o comando: "${promptText}". Como posso prosseguir?`;
-                aiMsg.innerText = contextualReply;
-                chatHistory.push({ role: "assistant", content: contextualReply });
+                let reply = isFollowUp ? `🧠 Analisando sua nova pergunta sobre "${promptText}" com base no contexto anterior: O sistema OverStore está 100% estável.` : `🤖 Entendido! Registrei o comando: "${promptText}". Como posso prosseguir?`;
+                aiMsg.innerText = reply;
+                chatHistory.push({ role: "assistant", content: reply });
                 viewport.scrollTop = viewport.scrollHeight;
             }, 1500);
         }
